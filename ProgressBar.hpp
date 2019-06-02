@@ -7,6 +7,7 @@
 class ProgressBar {
 private:
     unsigned int ticks = 0;
+    float speed; // milliseconds per tick
 
     const unsigned int total_ticks;
     const unsigned int bar_width;
@@ -22,13 +23,24 @@ public:
 
     unsigned int operator++() { return ++ticks; }
 
-    void display() const
+    unsigned int percentage() const { return (float) ticks / total_ticks * 100; };
+
+    auto estimated_runtime() const {
+       return std::chrono::milliseconds( (int) (speed*total_ticks) );
+    };
+
+    auto time_remaining() const {
+       return std::chrono::milliseconds( (int) (speed*(total_ticks-ticks)) );
+    };
+
+    void display()
     {
         float progress = (float) ticks / total_ticks;
         int pos = (int) (bar_width * progress);
 
         std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
         auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time).count();
+	speed = time_elapsed / (float) ticks; // milliseconds per tick
 
         std::cout << "[";
 
@@ -38,11 +50,12 @@ public:
             else std::cout << incomplete_char;
         }
         std::cout << "] " << int(progress * 100.0) << "% "
-                  << float(time_elapsed) / 1000.0 << "s\r";
+                  << float(time_elapsed) / 1000.0
+		  << "/" << std::chrono::duration_cast<std::chrono::seconds>(estimated_runtime()).count() << "s\r";
         std::cout.flush();
     }
 
-    void done() const
+    void done()
     {
         display();
         std::cout << std::endl;
