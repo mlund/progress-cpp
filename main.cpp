@@ -12,20 +12,30 @@ int main() {
      * and a blank space for incomplete
      */
     ProgressBar progressBar(total, 70, '#', '-');
-
     for (int i = 0; i < total; i++) {
         ++progressBar; // record the tick
-
         usleep(200); // simulate work
-
         // display the bar only at certain steps
-        if (i % 10 == 0)
+        if (i % 100 == 0)
             progressBar.display();
     }
-
     // tell the bar to finish
     progressBar.done();
-
     std::cout << "Done!" << std::endl;
+
+    /*
+     * Define a progress log.
+     */
+    ProgressLog progressLog(total);
+    for (int i = 0; i < total; i++) {
+        ++progressLog; // record the tick
+        usleep(200); // simulate work
+        // display the bar only at certain steps
+        if (i % 1000 == 0)
+            progressLog.display();
+    }
+    progressLog.done();
+    std::cout << "Done!" << std::endl;
+
     return 0;
 }
