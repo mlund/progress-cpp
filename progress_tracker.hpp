@@ -131,7 +131,8 @@ class ProgressLog : public ProgressTrackerImpl {
         auto millisec_total = timeTotal().count();
         auto system_now = system_clock::now();
         // auto time_now = system_clock::to_time_t(system_now);
-        auto time_end = system_clock::to_time_t(system_now + (start_time + timeTotal() - now));
+        auto time_end = system_clock::to_time_t(
+                system_now + std::chrono::duration_cast<system_clock::duration>(start_time + timeTotal() - now));
 
         ostream << std::fixed << std::setw(3) << std::setprecision(0) << 100 * progress() << "%";
         updateTimeWidth();
