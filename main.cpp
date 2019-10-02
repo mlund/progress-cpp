@@ -42,5 +42,26 @@ int main() {
     progressLog.done();
     std::cout << "Done!" << std::endl;
 
+    #ifndef USE_HPP
+    // use a decorator to limit output frequency
+    TaciturnDecorator taciturnProgressLog(
+        // print line by line
+        std::make_shared<ProgressLog>(total),
+        // at most every 0.2 seconds or after 20% of progress, whatever comes first
+        std::chrono::milliseconds(200), 0.2
+    );
+
+    for (int i = 0; i < total; i++) {
+        ++taciturnProgressLog; // record the tick
+        usleep(200); // simulate work
+        // display a new line only at certain steps;
+        // actually even less frequently
+        if (i % 10 == 0)
+            taciturnProgressLog.display();
+    }
+    taciturnProgressLog.done();
+    std::cout << "Done!" << std::endl;
+    #endif
+
     return 0;
 }

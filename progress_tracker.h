@@ -8,10 +8,22 @@
 using std::chrono::milliseconds;
 
 /**
+ *  Interface of progress trackers.
+ */
+class ProgressTracker {
+  public:
+    virtual unsigned int operator++() = 0; //!< next tick in progress
+    virtual float progress() const = 0;    //!< current progress as number between 0 and 1
+    virtual void display() = 0;            //!< update the visual representation of progress
+    virtual void done() = 0;               //!< update the visual representation of progress when finished
+    virtual ~ProgressTracker() = default;
+};
+
+/**
  * A generic abstract implementation of a ProgressTracker to be derived from.
  * Implement display and optionally done method in the derived class.
  */
-class ProgressTrackerImpl {
+class ProgressTrackerImpl : public ProgressTracker {
     unsigned int ticks = 0;
     const unsigned int total_ticks;
     float speed = 0.0; //!< milliseconds per tick
@@ -80,6 +92,42 @@ class ProgressBar : public ProgressTrackerImpl {
 class ProgressLog : public ProgressTrackerImpl {
   public:
     ProgressLog(unsigned int total, std::ostream &ostream = std::cout);
+
+    void display() override;
+};
+
+/**
+ * A generic class progress tracker decorators can be derived from.
+ */
+class ProgressTrackerDecorator : public ProgressTracker {
+    std::shared_ptr <ProgressTracker> progress_tracker;
+  public:
+    ProgressTrackerDecorator(std::shared_ptr <ProgressTracker> progress_tracker) :
+            progress_tracker(progress_tracker) {};
+
+    unsigned int operator++() { return progress_tracker->operator++(); }
+
+    float progress() const { return progress_tracker->progress(); };
+
+    void display() { progress_tracker->display(); };
+
+    void done() { progress_tracker->done(); };
+};
+
+/**
+ * Progress tracker decorator limiting the frequency of visual representation updates.
+ *
+ * The display method of the tracker decorator is called only when the given time interval or progress interval
+ * have passed since the last update, whatever comes first.
+ */
+class TaciturnDecorator : public ProgressTrackerDecorator {
+    milliseconds time_interval; //!< time interval between updates
+    std::chrono::steady_clock::time_point last_time = std::chrono::steady_clock::time_point::min(); //!< timestamp when last updated
+    const float progress_interval; //!< progress interval between updates
+    float last_progress = -1.0; //!< progress when last updated
+  public:
+    TaciturnDecorator(std::shared_ptr <ProgressTracker> progress_tracker,
+                      milliseconds time_interval = milliseconds(100), float progress_interval = 0.001);
 
     void display() override;
 };

@@ -99,3 +99,18 @@ void ProgressLog::display() {
     ostream << " ETA [" << std::put_time(std::localtime(&time_end), "%F %T %z") << "]" << std::endl;
     ostream.flush();
 }
+
+// ========== TaciturnDecorator ==========
+
+TaciturnDecorator::TaciturnDecorator(std::shared_ptr <ProgressTracker> progress_tracker,
+                                     milliseconds time_interval, float progress_interval) :
+        ProgressTrackerDecorator(progress_tracker),
+        time_interval(time_interval), progress_interval(progress_interval) {}
+
+void TaciturnDecorator::display() {
+    if (last_progress + progress_interval < progress() || last_time + time_interval < steady_clock::now()) {
+        ProgressTrackerDecorator::display();
+        last_progress = progress();
+        last_time = steady_clock::now();
+    }
+}
