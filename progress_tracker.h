@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <memory>
 
+namespace ProgressIndicator {
 using std::chrono::milliseconds;
 
 /**
@@ -131,3 +132,4 @@ class TaciturnDecorator : public ProgressTrackerDecorator {
 
     void display() override;
 };
+} // end namespace ProgressIndicator

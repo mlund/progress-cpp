@@ -7,6 +7,8 @@
 #include "progress_tracker.h"
 #endif
 
+using namespace ProgressIndicator;
+
 /* Example usage of ProgressBar */
 int main() {
     const int total = 10000;

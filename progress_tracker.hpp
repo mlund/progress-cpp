@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <memory>
 
+namespace ProgressIndicator {
 using std::chrono::milliseconds;
 
 class ProgressTrackerImpl {
@@ -142,3 +143,4 @@ class ProgressLog : public ProgressTrackerImpl {
         ostream.flush();
     }
 };
+} // end namespace ProgressIndicator

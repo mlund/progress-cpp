@@ -1,5 +1,6 @@
 #include "progress_tracker.h"
 
+namespace ProgressIndicator {
 using std::chrono::steady_clock;
 using std::chrono::system_clock;
 using std::chrono::milliseconds;
@@ -114,3 +115,4 @@ void TaciturnDecorator::display() {
         last_time = steady_clock::now();
     }
 }
+} // end namespace ProgressIndicator
