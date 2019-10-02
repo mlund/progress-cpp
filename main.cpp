@@ -1,6 +1,11 @@
 #include <iostream>
 #include <unistd.h>
+
+#ifdef USE_HPP
 #include "progress_tracker.hpp"
+#else
+#include "progress_tracker.h"
+#endif
 
 /* Example usage of ProgressBar */
 int main() {
