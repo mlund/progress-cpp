@@ -17,7 +17,7 @@ void ProgressTrackerImpl::update() {
 
 void ProgressTrackerImpl::updateTimeWidth() {
     int number_width = 3; // 0.0
-    for (auto t = 10; t <= (timeTotal().count() + 500) * 0.001; t *= 10) {
+    for (auto t = 10; t <= (timeTotal().count() + 500) / 1000; t *= 10) {
         ++number_width;
     }
     if (number_width > time_width) {
