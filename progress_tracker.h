@@ -13,10 +13,11 @@ using std::chrono::milliseconds;
  */
 class ProgressTracker {
   public:
-    virtual unsigned int operator++() = 0; //!< next tick in progress
-    virtual float progress() const = 0;    //!< current progress as number between 0 and 1
-    virtual void display() = 0;            //!< update the visual representation of progress
-    virtual void done() = 0;               //!< update the visual representation of progress when finished
+    virtual unsigned int operator++() = 0;    //!< next tick in progress (++tracker)
+    virtual unsigned int operator++(int) = 0; //!< next tick in progress (tracker++)
+    virtual float progress() const = 0;       //!< current progress as number between 0 and 1
+    virtual void display() = 0;               //!< update the visual representation of progress
+    virtual void done() = 0;                  //!< update the visual representation of progress when finished
     virtual ~ProgressTracker() = default;
 };
 
@@ -39,6 +40,8 @@ class ProgressTrackerImpl : public ProgressTracker {
     ProgressTrackerImpl(unsigned int total, std::ostream &ostream = std::cout);
 
     unsigned int inline operator++() { return ++ticks; };
+
+    unsigned int inline operator++(int) { return ticks++; };
 
     float inline progress() const { return float(ticks) / float(total_ticks); };
 
@@ -107,6 +110,8 @@ class ProgressTrackerDecorator : public ProgressTracker {
             progress_tracker(progress_tracker) {};
 
     unsigned int operator++() { return progress_tracker->operator++(); }
+
+    unsigned int operator++(int) { return progress_tracker->operator++(0); }
 
     float progress() const { return progress_tracker->progress(); };
 

@@ -25,6 +25,8 @@ class ProgressTrackerImpl {
 
     auto inline operator++() -> decltype(ticks) { return ++ticks; };
 
+    auto inline operator++(int) -> decltype(ticks) { return ticks++; };
+
     float inline progress() const { return float(ticks) / float(total_ticks); };
 
     virtual void display() = 0;
