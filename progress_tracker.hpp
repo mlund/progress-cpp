@@ -25,6 +25,8 @@ class ProgressTrackerImpl {
 
     auto inline operator++() -> decltype(ticks) { return ++ticks; };
 
+    auto inline operator++(int) -> decltype(ticks) { return ticks++; };
+
     float inline progress() const { return float(ticks) / float(total_ticks); };
 
     virtual void display() = 0;
@@ -47,7 +49,7 @@ class ProgressTrackerImpl {
      */
     void updateTimeWidth() {
         int number_width = 3; // 0.0
-        for (auto t = 10; t <= (timeTotal().count() + 500) * 0.001; t *= 10) {
+        for (auto t = 10; t <= (timeTotal().count() + 500) / 1000; t *= 10) {
             ++number_width;
         }
         if (number_width > time_width) {
