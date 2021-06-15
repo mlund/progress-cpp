@@ -14,7 +14,7 @@ using std::chrono::milliseconds;
 class ProgressTracker {
   public:
     virtual unsigned int operator++() = 0; //!< next tick in progress
-    virtual float progress() const = 0;    //!< current progress as number between 0 and 1
+    virtual double progress() const = 0;    //!< current progress as number between 0 and 1
     virtual void display() = 0;            //!< update the visual representation of progress
     virtual void done() = 0;               //!< update the visual representation of progress when finished
     virtual ~ProgressTracker() = default;
@@ -27,7 +27,7 @@ class ProgressTracker {
 class ProgressTrackerImpl : public ProgressTracker {
     unsigned int ticks = 0;
     const unsigned int total_ticks;
-    float speed = 0.0; //!< milliseconds per tick
+    double speed = 0.0; //!< milliseconds per tick
 
   protected:
     std::ostream &ostream; //!< output stream
@@ -40,7 +40,7 @@ class ProgressTrackerImpl : public ProgressTracker {
 
     unsigned int inline operator++() { return ++ticks; };
 
-    float inline progress() const { return float(ticks) / float(total_ticks); };
+    double inline progress() const { return double(ticks) / double(total_ticks); };
 
     virtual void display() = 0;
 
@@ -108,7 +108,7 @@ class ProgressTrackerDecorator : public ProgressTracker {
 
     unsigned int operator++() { return progress_tracker->operator++(); }
 
-    float progress() const { return progress_tracker->progress(); };
+    double progress() const { return progress_tracker->progress(); };
 
     void display() { progress_tracker->display(); };
 
@@ -124,11 +124,11 @@ class ProgressTrackerDecorator : public ProgressTracker {
 class TaciturnDecorator : public ProgressTrackerDecorator {
     milliseconds time_interval; //!< time interval between updates
     std::chrono::steady_clock::time_point last_time = std::chrono::steady_clock::time_point::min(); //!< timestamp when last updated
-    const float progress_interval; //!< progress interval between updates
-    float last_progress = -1.0; //!< progress when last updated
+    const double progress_interval; //!< progress interval between updates
+    double last_progress = -1.0; //!< progress when last updated
   public:
     TaciturnDecorator(std::shared_ptr <ProgressTracker> progress_tracker,
-                      milliseconds time_interval = milliseconds(100), float progress_interval = 0.001);
+                      milliseconds time_interval = milliseconds(100), double progress_interval = 0.001);
 
     void display() override;
 };

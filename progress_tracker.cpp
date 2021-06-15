@@ -12,7 +12,7 @@ ProgressTrackerImpl::ProgressTrackerImpl(unsigned int total, std::ostream &ostre
 
 void ProgressTrackerImpl::update() {
     now = steady_clock::now();
-    speed = timeElapsed().count() / float(ticks); // update milliseconds per tick
+    speed = timeElapsed().count() / double(ticks); // update milliseconds per tick
 }
 
 void ProgressTrackerImpl::updateTimeWidth() {
@@ -69,8 +69,8 @@ void ProgressBar::display() {
     ostream << " " << std::setw(3) << std::setprecision(0) << 100 * progress() << "%";
     updateTimeWidth();
     ostream << std::setprecision(1)
-            << " " << std::setw(time_width) << float(millisec_elapsed) / 1000.0
-            << "/" << std::setw(time_width) << float(millisec_total) / 1000.0 << "s\r";
+            << " " << std::setw(time_width) << double(millisec_elapsed) / 1000.0
+            << "/" << std::setw(time_width) << double(millisec_total) / 1000.0 << "s\r";
     ostream.flush();
 }
 
@@ -95,8 +95,8 @@ void ProgressLog::display() {
     ostream << std::fixed << std::setw(3) << std::setprecision(0) << 100 * progress() << "%";
     updateTimeWidth();
     ostream << std::setprecision(1)
-            << " " << std::setw(time_width) << float(millisec_elapsed) / 1000.0
-            << "/" << std::setw(time_width) << float(millisec_total) / 1000.0 << "s";
+            << " " << std::setw(time_width) << double(millisec_elapsed) / 1000.0
+            << "/" << std::setw(time_width) << double(millisec_total) / 1000.0 << "s";
     // ostream << " [" << std::put_time(std::localtime(&time_now), "%F %T %z") << "]";
     ostream << " ETA [" << std::put_time(std::localtime(&time_end), "%F %T %z") << "]" << std::endl;
     ostream.flush();
@@ -105,7 +105,7 @@ void ProgressLog::display() {
 // ========== TaciturnDecorator ==========
 
 TaciturnDecorator::TaciturnDecorator(std::shared_ptr <ProgressTracker> progress_tracker,
-                                     milliseconds time_interval, float progress_interval) :
+                                     milliseconds time_interval, double progress_interval) :
         ProgressTrackerDecorator(progress_tracker),
         time_interval(time_interval), progress_interval(progress_interval) {}
 
