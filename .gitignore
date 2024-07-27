@@ -1,2 +1,20 @@
 .idea
-build
+*~
+.DS_Store
+*.a
+
+# CMake
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+DartConfiguration.tcl
+Testing
+CTestTestfile.cmake
+.ipynb_checkpoints/
+.swp
+*.swp
+build*
+.ninja*
+
